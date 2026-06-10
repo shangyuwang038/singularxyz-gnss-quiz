@@ -577,13 +577,70 @@ function submitLead() {
 
     };
 
-    fetch(API_URL,{
+const url =
 
-        method:"POST",
+API_URL +
 
-        body:JSON.stringify(payload)
+"?action=lead" +
 
-    })
+"&firstName=" +
+encodeURIComponent(first) +
+
+"&country=" +
+encodeURIComponent(countryVal) +
+
+"&email=" +
+encodeURIComponent(mail) +
+
+"&score=" +
+encodeURIComponent(score) +
+
+"&industry=" +
+encodeURIComponent(industry) +
+
+"&interest=" +
+encodeURIComponent(interests);
+
+fetch(url)
+
+.then(response => response.json())
+
+.then(resp => {
+
+    console.log(resp);
+
+    if(resp.status === "duplicate"){
+
+        alert(
+          "This email has already been submitted."
+        );
+
+        return;
+    }
+
+    if(resp.status === "success"){
+
+        document
+          .getElementById("lead")
+          .classList.add("hidden");
+
+        document
+          .getElementById("thanks")
+          .classList.remove("hidden");
+
+    }
+
+})
+
+.catch(error => {
+
+    console.error(error);
+
+    alert(
+      "Submission failed."
+    );
+
+});
 
     .then(response => response.json())
 
