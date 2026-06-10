@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+SingularXYZ GNSS Knowledge Challenge
+</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+font-family:
+"Segoe UI",
+Tahoma,
+Geneva,
+Verdana,
+sans-serif;
+
+background:
+linear-gradient(
+135deg,
+#f0f4f8,
+#d9e2f3
+);
+
+min-height:100vh;
+
+padding:30px;
+
+}
+
+.container{
+
+max-width:900px;
+
+margin:auto;
+
+background:white;
+
+border-radius:20px;
+
+padding:40px;
+
+box-shadow:
+0 15px 35px
+rgba(0,0,0,0.1);
+
+}
+
+.logo{
+
+text-align:center;
+
+margin-bottom:20px;
+
+}
+
+.logo img{
+
+max-width:200px;
+
+}
+
+.hidden{
+
+display:none;
+
+}
+
+h1{
+
+color:#0057B8;
+
+margin-bottom:15px;
+
+}
+
+h2{
+
+margin-bottom:15px;
+
+}
+
+p{
+
+margin-bottom:15px;
+
+line-height:1.6;
+
+}
+
+.btn{
+
+background:
+linear-gradient(
+90deg,
+#0057B8,
+#3a82e2
+);
+
+color:white;
+
+border:none;
+
+padding:
+14px 28px;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-size:16px;
+
+transition:0.3s;
+
+}
+
+.btn:hover{
+
+transform:
+translateY(-2px);
+
+}
+
+.progress{
+
+height:15px;
+
+background:#ddd;
+
+border-radius:20px;
+
+overflow:hidden;
+
+margin:
+20px 0;
+
+}
+
+.bar{
+
+height:100%;
+
+background:#0057B8;
+
+width:0%;
+
+transition:0.3s;
+
+}
+
+.option{
+
+padding:15px;
+
+border:1px solid #ccc;
+
+border-radius:12px;
+
+margin:12px 0;
+
+cursor:pointer;
+
+transition:0.2s;
+
+}
+
+.option:hover{
+
+background:#eef5ff;
+
+}
+
+.option.selected{
+
+background:#dcecff;
+
+border-color:#0057B8;
+
+}
+
+input,
+select{
+
+width:100%;
+
+padding:12px;
+
+margin:
+10px 0 20px;
+
+border-radius:8px;
+
+border:1px solid #ccc;
+
+}
+
+.question-image{
+
+width:100%;
+
+border-radius:12px;
+
+margin:15px 0;
+
+}
+
+.checkbox-group{
+
+margin-bottom:20px;
+
+}
+
+.checkbox-group label{
+
+display:block;
+
+margin:8px 0;
+
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="loading">
+
+<h2>
+Loading Questions...
+</h2>
+
+</div>
+
+<div id="welcome" class="hidden">
+
+<h1>
+🏆 GNSS Knowledge Challenge
+</h1>
+
+<p>
+Test your GNSS, RTK and
+Geospatial Technology knowledge.
+</p>
+
+<p>
+
+<strong id="introCount">
+0 Questions
+</strong>
+
+•
+Instant Results
+
+</p>
+
+<button
+class="btn"
+onclick="startQuiz()">
+
+Start Challenge
+
+</button>
+
+</div>
+
+<div id="quiz" class="hidden">
+
+<div id="progressText"></div>
+
+<div class="progress">
+
+<div
+id="bar"
+class="bar">
+</div>
+
+</div>
+
+<h2 id="question"></h2>
+
+<img
+id="questionImage"
+class="question-image hidden">
+
+<div id="options"></div>
+
+<button
+class="btn"
+onclick="nextQuestion()">
+
+Next
+
+</button>
+
+</div>
+
+<div id="result" class="hidden">
+
+<h1>
+Quiz Completed
+</h1>
+
+<h2 id="score"></h2>
+
+<p>
+
+Enter your details below
+and get a chance to win
+exclusive SingularXYZ
+giveaways.
+
+</p>
+
+<button
+class="btn"
+onclick="showLeadForm()">
+
+Continue
+
+</button>
+
+</div>
+
+<div id="lead" class="hidden">
+
+<h2>
+Save Your Result
+</h2>
+
+<input
+id="firstName"
+placeholder="First Name *">
+
+<input
+id="country"
+placeholder="Country / Region *">
+
+<input
+id="email"
+type="email"
+placeholder="Email Address *">
+
+<select id="industry">
+
+<option value="">
+Select Industry
+</option>
+
+<option>
+Surveying & Mapping
+</option>
+
+<option>
+Construction
+</option>
+
+<option>
+GIS
+</option>
+
+<option>
+Mining
+</option>
+
+<option>
+Engineering
+</option>
+
+<option>
+Government
+</option>
+
+<option>
+Dealer / Distributor
+</option>
+
+<option>
+Other
+</option>
+
+</select>
+
+<select id="interest">
+
+<option value="">
+Select Product Interest
+</option>
+
+<option>
+GNSS Receiver & RTK
+</option>
+
+<option>
+Precision Agriculture
+</option>
+
+<option>
+SLAM Laser Scanner
+</option>
+
+<option>
+Machine Control
+</option>
+
+<option>
+Monitoring & Infrastructure
+</option>
+
+</select>
+
+<button
+class="btn"
+onclick="submitLead()">
+
+Submit
+
+</button>
+
+</div>
+
+<div id="thanks" class="hidden">
+
+<h1>
+Thank You!
+</h1>
+
+<p>
+
+Your result has been
+recorded successfully.
+
+</p>
+
+</div>
+
+<script>
+let questions = [];
+let current = 0;
+let score = 0;
+const API_URL = "https://script.google.com/macros/s/AKfycbww_alx9XhuCFKtnqC6tQdO0gFrP9sdsT8HvM5dF4r6PCleC_IG4E-_ZfaYK8aMfDExFA/exec"; 
+
+// 页面加载时获取题目
+window.onload = function() {
+    fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+        questions = data;
+        document.getElementById("loading").classList.add("hidden");
+        document.getElementById("welcome").classList.remove("hidden");
+        document.getElementById("introCount").innerText = `${questions.length} Questions`;
+    })
+    .catch(err => alert("Failed to load questions"));
+};
+
+function startQuiz() {
+    current = 0;
+    score = 0;
+    document.getElementById("welcome").classList.add("hidden");
+    showQuestion();
+    document.getElementById("quiz").classList.remove("hidden");
+}
+
+function showQuestion() {
+    const q = questions[current];
+    document.getElementById("question").innerText = q.question;
+    const img = document.getElementById("questionImage");
+    if(q.imageURL) {
+        img.src = q.imageURL;
+        img.classList.remove("hidden");
+    } else {
+        img.classList.add("hidden");
+    }
+
+    const optionsDiv = document.getElementById("options");
+    optionsDiv.innerHTML = "";
+    q.options.forEach((opt, idx) => {
+        const btn = document.createElement("div");
+        btn.className = "option";
+        btn.innerText = opt;
+        btn.onclick = () => selectOption(idx, btn);
+        optionsDiv.appendChild(btn);
+    });
+
+    document.getElementById("progressText").innerText = `Question ${current+1} of ${questions.length}`;
+    const bar = document.getElementById("bar");
+    bar.style.width = `${((current)/questions.length)*100}%`;
+}
+
+function selectOption(idx, btn) {
+    const opts = document.querySelectorAll(".option");
+    opts.forEach(o => o.classList.remove("selected"));
+    btn.classList.add("selected");
+    // 立即判断分数
+    const q = questions[current];
+    if(q.type === "single" && idx === q.correct-1) {
+        score++;
+    }
+}
+
+function nextQuestion() {
+    current++;
+    if(current < questions.length) {
+        showQuestion();
+    } else {
+        document.getElementById("quiz").classList.add("hidden");
+        document.getElementById("result").classList.remove("hidden");
+        document.getElementById("score").innerText = `You scored ${score} out of ${questions.length}`;
+    }
+}
+
+function showLeadForm() {
+    document.getElementById("result").classList.add("hidden");
+    document.getElementById("lead").classList.remove("hidden");
+}
+</script>
+
+<script>
+function submitLead() {
+    const first = document.getElementById("firstName").value.trim();
+    const countryVal = document.getElementById("country").value.trim();
+    const mail = document.getElementById("email").value.trim();
+    const industry = document.getElementById("industry").value;
+    const interests = [...document.querySelectorAll('input[name="interest"]:checked')].map(x=>x.value);
+
+    if(!first || !countryVal || !mail){
+        alert("Please fill all required fields.");
+        return;
+    }
+
+    // Email 格式校验
+    if(!/^[^@]+@[^@]+\.[^@]+$/.test(mail)){
+        alert("Please enter a valid email address.");
+        return;
+    }
+
+    const payload = {
+        firstName: first,
+        country: countryVal,
+        email: mail,
+        score: score,
+        industry: industry,
+        interests: interests
+    };
+
+    fetch(API_URL,{
+  method:"POST",
+  body:JSON.stringify(payload)
+})
+.then(response=>response.text())
+.then(text=>{
+
+  console.log(text);
+
+  document
+    .getElementById("lead")
+    .classList.add("hidden");
+
+  document
+    .getElementById("thanks")
+    .classList.remove("hidden");
+
+})
+.catch(error=>{
+
+  console.error(error);
+
+  alert(
+    "Submission failed."
+  );
+
+});
+    .then(resp => {
+        if(resp.status === "duplicate"){
+            alert("This email has already been submitted.");
+            return;
+        }
+        document.getElementById("lead").classList.add("hidden");
+        document.getElementById("thanks").classList.remove("hidden");
+    })
+    .catch(err => {
+        alert("Submission failed. Please try again.");
+    });
+}
+</script>
+
+</div> <!-- container -->
+</body>
+</html>
