@@ -452,6 +452,7 @@ recorded successfully.
 let questions = [];
 let current = 0;
 let score = 0;
+let selectedAnswer = null;
 const API_URL = "https://script.google.com/macros/s/AKfycbww_alx9XhuCFKtnqC6tQdO0gFrP9sdsT8HvM5dF4r6PCleC_IG4E-_ZfaYK8aMfDExFA/exec"; 
 
 // 页面加载时获取题目
@@ -476,18 +477,24 @@ function startQuiz() {
 }
 
 function showQuestion() {
+    selectedAnswer = null;
+
     const q = questions[current];
+
     document.getElementById("question").innerText = q.question;
+
     const img = document.getElementById("questionImage");
-    if(q.imageURL) {
+    if (q.imageURL) {
         img.src = q.imageURL;
         img.classList.remove("hidden");
     } else {
         img.classList.add("hidden");
+        img.removeAttribute("src");
     }
 
     const optionsDiv = document.getElementById("options");
     optionsDiv.innerHTML = "";
+
     q.options.forEach((opt, idx) => {
         const btn = document.createElement("div");
         btn.className = "option";
@@ -496,30 +503,44 @@ function showQuestion() {
         optionsDiv.appendChild(btn);
     });
 
-    document.getElementById("progressText").innerText = `Question ${current+1} of ${questions.length}`;
-    const bar = document.getElementById("bar");
-    bar.style.width = `${((current)/questions.length)*100}%`;
+    document.getElementById("progressText").innerText =
+        `Question ${current + 1} of ${questions.length}`;
+
+    document.getElementById("bar").style.width =
+        `${((current + 1) / questions.length) * 100}%`;
 }
 
 function selectOption(idx, btn) {
+    selectedAnswer = idx;
+
     const opts = document.querySelectorAll(".option");
     opts.forEach(o => o.classList.remove("selected"));
+
     btn.classList.add("selected");
-    // 立即判断分数
-    const q = questions[current];
-    if(q.type === "single" && idx === q.correct-1) {
-        score++;
-    }
 }
 
 function nextQuestion() {
+    if (selectedAnswer === null) {
+        alert("Please select an answer.");
+        return;
+    }
+
+    const q = questions[current];
+    const type = String(q.type || "single").trim().toLowerCase();
+
+    if (type === "single" && selectedAnswer === Number(q.correct) - 1) {
+        score++;
+    }
+
     current++;
-    if(current < questions.length) {
+
+    if (current < questions.length) {
         showQuestion();
     } else {
         document.getElementById("quiz").classList.add("hidden");
         document.getElementById("result").classList.remove("hidden");
-        document.getElementById("score").innerText = `You scored ${score} out of ${questions.length}`;
+        document.getElementById("score").innerText =
+            `You scored ${score} out of ${questions.length}`;
     }
 }
 
@@ -532,155 +553,53 @@ function showLeadForm() {
 <script>
 function submitLead() {
 
-    const first =
-        document.getElementById("firstName").value.trim();
+    const first = document.getElementById("firstName").value.trim();
+    const countryVal = document.getElementById("country").value.trim();
+    const mail = document.getElementById("email").value.trim();
+    const industry = document.getElementById("industry").value;
+    const interests = document.getElementById("interest").value;
 
-    const countryVal =
-        document.getElementById("country").value.trim();
-
-    const mail =
-        document.getElementById("email").value.trim();
-
-    const industry =
-        document.getElementById("industry").value;
-
-    const interests =
-        document.getElementById("interest").value;
-
-    if(!first || !countryVal || !mail){
-
+    if (!first || !countryVal || !mail) {
         alert("Please fill all required fields.");
-
         return;
     }
 
-    if(!/^[^@]+@[^@]+\.[^@]+$/.test(mail)){
-
+    if (!/^[^@]+@[^@]+\.[^@]+$/.test(mail)) {
         alert("Please enter a valid email address.");
-
         return;
     }
 
-    const payload = {
+    const url =
+        API_URL +
+        "?action=lead" +
+        "&firstName=" + encodeURIComponent(first) +
+        "&country=" + encodeURIComponent(countryVal) +
+        "&email=" + encodeURIComponent(mail) +
+        "&score=" + encodeURIComponent(score) +
+        "&industry=" + encodeURIComponent(industry) +
+        "&interest=" + encodeURIComponent(interests);
 
-        firstName: first,
+    fetch(url)
+        .then(response => response.json())
+        .then(resp => {
 
-        country: countryVal,
+            console.log(resp);
 
-        email: mail,
+            if (resp.status === "duplicate") {
+                alert("This email has already been submitted.");
+                return;
+            }
 
-        score: score,
+            if (resp.status === "success") {
+                document.getElementById("lead").classList.add("hidden");
+                document.getElementById("thanks").classList.remove("hidden");
+            }
 
-        industry: industry,
-
-        interests: interests
-
-    };
-
-const url =
-
-API_URL +
-
-"?action=lead" +
-
-"&firstName=" +
-encodeURIComponent(first) +
-
-"&country=" +
-encodeURIComponent(countryVal) +
-
-"&email=" +
-encodeURIComponent(mail) +
-
-"&score=" +
-encodeURIComponent(score) +
-
-"&industry=" +
-encodeURIComponent(industry) +
-
-"&interest=" +
-encodeURIComponent(interests);
-
-fetch(url)
-
-.then(response => response.json())
-
-.then(resp => {
-
-    console.log(resp);
-
-    if(resp.status === "duplicate"){
-
-        alert(
-          "This email has already been submitted."
-        );
-
-        return;
-    }
-
-    if(resp.status === "success"){
-
-        document
-          .getElementById("lead")
-          .classList.add("hidden");
-
-        document
-          .getElementById("thanks")
-          .classList.remove("hidden");
-
-    }
-
-})
-
-.catch(error => {
-
-    console.error(error);
-
-    alert(
-      "Submission failed."
-    );
-
-});
-
-    .then(response => response.json())
-
-    .then(resp => {
-
-        console.log(resp);
-
-        if(resp.status === "duplicate"){
-
-            alert(
-                "This email has already been submitted."
-            );
-
-            return;
-        }
-
-        if(resp.status === "success"){
-
-            document
-                .getElementById("lead")
-                .classList.add("hidden");
-
-            document
-                .getElementById("thanks")
-                .classList.remove("hidden");
-
-        }
-
-    })
-
-    .catch(error => {
-
-        console.error(error);
-
-        alert(
-            "Submission failed."
-        );
-
-    });
-
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Submission failed.");
+        });
 }
 </script>
 
