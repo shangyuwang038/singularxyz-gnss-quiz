@@ -553,7 +553,7 @@ function showLeadForm() {
 <script>
 function submitLead() {
 
-    const name = document.getElementById("Name").value.trim();
+    const name = document.getElementById("name").value.trim();
     const countryVal = document.getElementById("country").value.trim();
     const mail = document.getElementById("email").value.trim();
     const industry = document.getElementById("industry").value;
@@ -572,7 +572,7 @@ function submitLead() {
     const url =
         API_URL +
         "?action=lead" +
-        "&Name=" + encodeURIComponent(name) +
+        "&name=" + encodeURIComponent(name) +
         "&country=" + encodeURIComponent(countryVal) +
         "&email=" + encodeURIComponent(mail) +
         "&score=" + encodeURIComponent(score) +
