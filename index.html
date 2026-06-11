@@ -553,13 +553,13 @@ function showLeadForm() {
 <script>
 function submitLead() {
 
-    const first = document.getElementById("firstName").value.trim();
+    const name = document.getElementById("Name").value.trim();
     const countryVal = document.getElementById("country").value.trim();
     const mail = document.getElementById("email").value.trim();
     const industry = document.getElementById("industry").value;
     const interests = document.getElementById("interest").value;
 
-    if (!first || !countryVal || !mail) {
+    if (!name || !countryVal || !mail) {
         alert("Please fill all required fields.");
         return;
     }
