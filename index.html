@@ -343,8 +343,8 @@ Save Your Result
 </h2>
 
 <input
-id="firstName"
-placeholder="First Name *">
+id="Name"
+placeholder="Name *">
 
 <input
 id="country"
@@ -572,7 +572,7 @@ function submitLead() {
     const url =
         API_URL +
         "?action=lead" +
-        "&firstName=" + encodeURIComponent(first) +
+        "&Name=" + encodeURIComponent(name) +
         "&country=" + encodeURIComponent(countryVal) +
         "&email=" + encodeURIComponent(mail) +
         "&score=" + encodeURIComponent(score) +
