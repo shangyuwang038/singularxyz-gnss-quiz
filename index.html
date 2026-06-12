@@ -261,25 +261,18 @@ Next
 <div id="result" class="hidden">
 
 <h1>
-Quiz Completed
+Your Result Is Ready
 </h1>
 
-<h2 id="score"></h2>
-
 <p>
-
-Enter your details below
-and get a chance to win
-exclusive SingularXYZ
-giveaways.
-
+Enter your email to view your full score and get a chance to win exclusive SingularXYZ giveaways.
 </p>
 
 <button
 class="btn"
 onclick="showLeadForm()">
 
-Continue
+View My Result
 
 </button>
 
@@ -288,8 +281,12 @@ Continue
 <div id="lead" class="hidden">
 
 <h2>
-Save Your Result
+Unlock Your Full Score
 </h2>
+
+<p>
+Fill in your details to view your complete result and enter the SingularXYZ giveaway draw.
+</p>
 
 <input
 id="name"
@@ -389,11 +386,14 @@ Thank You!
 </h1>
 
 <p>
-
-Your result has been
-recorded successfully.
-
+Your result has been recorded successfully.
 </p>
+
+<h2 id="finalScore"></h2>
+
+<h2 id="resultLevel"></h2>
+
+<p id="resultComment"></p>
 
 </div>
 
@@ -488,8 +488,6 @@ function nextQuestion() {
     } else {
         document.getElementById("quiz").classList.add("hidden");
         document.getElementById("result").classList.remove("hidden");
-        document.getElementById("score").innerText =
-            `You scored ${score} out of ${questions.length}`;
     }
 }
 
@@ -500,6 +498,42 @@ function showLeadForm() {
 </script>
 
 <script>
+function getResultLevel(score, total) {
+    const percent = total > 0 ? (score / total) * 100 : 0;
+
+    if (percent >= 90) {
+        return {
+            title: "🏆 GNSS Expert",
+            comment: "Excellent work! You demonstrate a strong understanding of GNSS, RTK, and modern surveying technologies."
+        };
+    }
+
+    if (percent >= 70) {
+        return {
+            title: "🎯 RTK Professional",
+            comment: "Great job! You have solid knowledge of positioning technologies and field surveying applications."
+        };
+    }
+
+    if (percent >= 50) {
+        return {
+            title: "📍 Surveying Enthusiast",
+            comment: "Well done! You understand many key GNSS and RTK concepts and are building a strong foundation."
+        };
+    }
+
+    if (percent >= 30) {
+        return {
+            title: "🚀 GNSS Explorer",
+            comment: "You're off to a good start. Keep learning and exploring the world of positioning technology."
+        };
+    }
+
+    return {
+        title: "🌍 Future Positioning Expert",
+        comment: "Everyone starts somewhere. Thanks for taking the challenge and beginning your GNSS journey."
+    };
+}
 function submitLead() {
 
     const name = document.getElementById("name").value.trim();
@@ -540,9 +574,18 @@ function submitLead() {
             }
 
             if (resp.status === "success") {
-                document.getElementById("lead").classList.add("hidden");
-                document.getElementById("thanks").classList.remove("hidden");
-            }
+              const result = getResultLevel(score, questions.length);
+
+              document.getElementById("finalScore").innerText =
+                `You scored ${score} out of ${questions.length}`;
+
+              document.getElementById("resultLevel").innerText = result.title;
+
+              document.getElementById("resultComment").innerText = result.comment;
+
+              document.getElementById("lead").classList.add("hidden");
+              document.getElementById("thanks").classList.remove("hidden");
+}
 
         })
         .catch(error => {
