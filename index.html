@@ -128,6 +128,16 @@ p {
   border-color: var(--brand-dark);
   box-shadow: 0 0 0 3px rgba(136, 202, 147, 0.22);
 }
+  
+  .option.correct {
+  background: #e4f6e7;
+  border-color: #3f7f4a;
+}
+
+.option.wrong {
+  background: #ffecec;
+  border-color: #d45a5a;
+}
 
 input,
 select {
@@ -183,6 +193,24 @@ select:focus {
   margin: 15px 0;
   border: 1px solid var(--border);
   background: #f6faf7;
+}
+
+.feedback-box {
+  margin-top: 22px;
+  padding: 20px;
+  border-radius: 14px;
+  background: var(--brand-light);
+  border: 1px solid rgba(136, 202, 147, 0.45);
+}
+
+.feedback-box h3 {
+  color: var(--brand-dark);
+  margin-bottom: 10px;
+}
+
+.feedback-box p {
+  color: var(--text);
+  margin-bottom: 12px;
 }
 </style>
 
@@ -261,12 +289,37 @@ alt="Question image">
 <div id="options"></div>
 
 <button
+id="submitAnswerBtn"
 class="btn"
-onclick="nextQuestion()">
+onclick="submitAnswer()">
 
-Next
+Submit Answer
 
 </button>
+
+<button
+id="nextQuestionBtn"
+class="btn hidden"
+onclick="nextQuestion()">
+
+Next Question
+
+</button>
+
+<div id="answerFeedback" class="hidden feedback-box">
+
+<h3 id="feedbackTitle"></h3>
+
+<p id="feedbackText"></p>
+
+<img
+id="feedbackImage"
+class="question-image hidden"
+loading="lazy"
+decoding="async"
+alt="Product image">
+
+</div>
 
 </div>
 
@@ -414,6 +467,7 @@ let questions = [];
 let current = 0;
 let score = 0;
 let selectedAnswer = null;
+let answerSubmitted = false;
 const API_URL = "https://script.google.com/macros/s/AKfycbww_alx9XhuCFKtnqC6tQdO0gFrP9sdsT8HvM5dF4r6PCleC_IG4E-_ZfaYK8aMfDExFA/exec"; 
 
 // 页面加载时获取题目
@@ -439,6 +493,11 @@ function startQuiz() {
 
 function showQuestion() {
     selectedAnswer = null;
+    answerSubmitted = false;
+
+    document.getElementById("submitAnswerBtn").classList.remove("hidden");
+    document.getElementById("nextQuestionBtn").classList.add("hidden");
+    document.getElementById("answerFeedback").classList.add("hidden");
 
     const q = questions[current];
 
@@ -469,9 +528,14 @@ function showQuestion() {
 
     document.getElementById("bar").style.width =
         `${((current + 1) / questions.length) * 100}%`;
+
+      preloadNextImage();
 }
 
 function selectOption(idx, btn) {
+    if (answerSubmitted) {
+        return;
+    }
     selectedAnswer = idx;
 
     const opts = document.querySelectorAll(".option");
@@ -481,16 +545,9 @@ function selectOption(idx, btn) {
 }
 
 function nextQuestion() {
-    if (selectedAnswer === null) {
-        alert("Please select an answer.");
+     if (!answerSubmitted) {
+        alert("Please submit your answer first.");
         return;
-    }
-
-    const q = questions[current];
-    const type = String(q.type || "single").trim().toLowerCase();
-
-    if (type === "single" && selectedAnswer === Number(q.correct) - 1) {
-        score++;
     }
 
     current++;
@@ -503,6 +560,59 @@ function nextQuestion() {
     }
 }
 
+  function submitAnswer() {
+    if (selectedAnswer === null) {
+        alert("Please select an answer.");
+        return;
+    }
+
+    if (answerSubmitted) {
+        return;
+    }
+
+    answerSubmitted = true;
+
+    const q = questions[current];
+    const correctIndex = Number(q.correct) - 1;
+    const isCorrect = selectedAnswer === correctIndex;
+
+    if (isCorrect) {
+        score++;
+    }
+
+    const opts = document.querySelectorAll(".option");
+
+    opts.forEach((opt, idx) => {
+        if (idx === correctIndex) {
+            opt.classList.add("correct");
+        }
+
+        if (idx === selectedAnswer && !isCorrect) {
+            opt.classList.add("wrong");
+        }
+    });
+
+    document.getElementById("feedbackTitle").innerText =
+        isCorrect ? "Correct Answer!" : "Good Try!";
+
+    document.getElementById("feedbackText").innerText =
+        q.productText || "Discover how SingularXYZ solutions support reliable GNSS, RTK, and geospatial workflows in the field.";
+
+    const feedbackImage = document.getElementById("feedbackImage");
+
+    if (q.productImageURL) {
+        feedbackImage.src = q.productImageURL;
+        feedbackImage.classList.remove("hidden");
+    } else {
+        feedbackImage.classList.add("hidden");
+        feedbackImage.removeAttribute("src");
+    }
+
+    document.getElementById("answerFeedback").classList.remove("hidden");
+    document.getElementById("submitAnswerBtn").classList.add("hidden");
+    document.getElementById("nextQuestionBtn").classList.remove("hidden");
+}
+  
 function showLeadForm() {
     document.getElementById("result").classList.add("hidden");
     document.getElementById("lead").classList.remove("hidden");
