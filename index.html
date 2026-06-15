@@ -593,8 +593,15 @@ function nextQuestion() {
     document.getElementById("feedbackTitle").innerText =
         isCorrect ? "Correct Answer!" : "Good Try!";
 
-    document.getElementById("feedbackText").innerText =
-        q.productText || "Discover how SingularXYZ solutions support reliable GNSS, RTK, and geospatial workflows in the field.";
+    const feedbackText = document.getElementById("feedbackText");
+
+    if (q.productText) {
+    feedbackText.innerText = q.productText;
+    feedbackText.classList.remove("hidden");
+    } else {
+    feedbackText.innerText = "";
+    feedbackText.classList.add("hidden");
+    }
 
     const feedbackImage = document.getElementById("feedbackImage");
 
