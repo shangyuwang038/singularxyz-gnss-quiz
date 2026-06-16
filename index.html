@@ -275,9 +275,6 @@ Geospatial Technology knowledge.
 0 Questions
 </strong>
 
-•
-Instant Results
-
 </p>
 
 <button
@@ -556,7 +553,7 @@ function selectOption(idx, btn) {
 }
 
 function nextQuestion() {
-     if (!answerSubmitted) {
+    if (!answerSubmitted) {
         alert("Please submit your answer first.");
         return;
     }
@@ -567,6 +564,12 @@ function nextQuestion() {
         showQuestion();
     } else {
         document.getElementById("quiz").classList.add("hidden");
+
+        const resultPage = document.getElementById("result");
+        if (resultPage) {
+            resultPage.classList.add("hidden");
+        }
+
         document.getElementById("lead").classList.remove("hidden");
     }
 }
