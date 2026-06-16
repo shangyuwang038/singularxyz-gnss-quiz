@@ -514,6 +514,7 @@ function showQuestion() {
     document.getElementById("answerFeedback").classList.add("hidden");
 
     const q = questions[current];
+    const type = String(q.type || "single").trim().toLowerCase();
 
     document.getElementById("question").innerText = q.question;
 
