@@ -623,6 +623,7 @@ function nextQuestion() {
         /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
         '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
     );
+    return safeText.replace(/\n/g, "<br>");
 }
   
   function submitAnswer() {
