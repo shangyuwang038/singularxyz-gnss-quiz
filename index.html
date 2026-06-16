@@ -347,25 +347,6 @@ alt="">
 
 </div>
 
-<div id="result" class="hidden">
-
-<h1>
-Your Result Is Ready
-</h1>
-
-<p>
-Enter your email to view your full score and get a chance to win exclusive SingularXYZ giveaways.
-</p>
-
-<button
-class="btn"
-onclick="showLeadForm()">
-
-View My Result
-
-</button>
-
-</div>
 
 <div id="lead" class="hidden">
 
@@ -374,7 +355,7 @@ Unlock Your Full Score
 </h2>
 
 <p>
-Fill in your details to view your complete result and enter the SingularXYZ giveaway draw.
+Fill in your details to view your complete result and get a chance to win exclusive SingularXYZ giveaways.
 </p>
 
 <input
@@ -648,11 +629,6 @@ function nextQuestion() {
     document.getElementById("answerFeedback").classList.remove("hidden");
     document.getElementById("submitAnswerBtn").classList.add("hidden");
     document.getElementById("nextQuestionBtn").classList.remove("hidden");
-}
-  
-function showLeadForm() {
-    document.getElementById("result").classList.add("hidden");
-    document.getElementById("lead").classList.remove("hidden");
 }
 </script>
 
