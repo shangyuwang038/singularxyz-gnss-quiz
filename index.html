@@ -762,6 +762,15 @@ function submitLead() {
 
   function downloadResultImage() {
     const resultArea = document.getElementById("thanks");
+    const qrBox = document.getElementById("qrBox");
+    
+    const oldPadding = resultArea.style.padding;
+    const oldMaxWidth = resultArea.style.maxWidth;
+    const oldMargin = resultArea.style.margin;
+
+    qrBox.classList.remove("hidden");
+
+    
     resultArea.style.padding = "42px";
     resultArea.style.maxWidth = "720px";
     resultArea.style.margin = "0 auto";
@@ -774,6 +783,12 @@ function submitLead() {
         link.download = "singularxyz-gnss-quiz-result.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
+      
+        qrBox.classList.add("hidden");
+
+        resultArea.style.padding = oldPadding;
+        resultArea.style.maxWidth = oldMaxWidth;
+        resultArea.style.margin = oldMargin;
     });
 }
 </script>
