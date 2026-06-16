@@ -549,6 +549,18 @@ function nextQuestion() {
     }
 }
 
+  function formatFeedbackText(text) {
+    const safeText = String(text || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+    return safeText.replace(
+        /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
+        '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+}
+  
   function submitAnswer() {
     if (selectedAnswer === null) {
         alert("Please select an answer.");
@@ -587,7 +599,7 @@ function nextQuestion() {
     const feedbackText = document.getElementById("feedbackText");
 
     if (q.productText) {
-    feedbackText.innerText = q.productText;
+    feedbackText.innerHTML = formatFeedbackText(q.productText);
     feedbackText.classList.remove("hidden");
     } else {
     feedbackText.innerText = "";
