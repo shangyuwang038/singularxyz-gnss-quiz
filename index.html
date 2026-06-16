@@ -240,6 +240,24 @@ select:focus {
     font-size: 14px;
     padding: 10px 16px;
   }
+
+  .qr-box {
+  margin-top: 18px;
+  text-align: center;
+}
+
+.qr-box p {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.result-qr {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 16px;
+}
 </style>
 
 </head>
@@ -437,6 +455,16 @@ Your result has been recorded successfully.
 
 <p id="resultComment"></p>
 
+<div class="qr-box">
+  <p>Scan to take the challenge</p>
+
+  <img
+  id="resultQr"
+  class="result-qr"
+  src="images/quiz-qr.png"
+  alt="Quiz QR code">
+</div>
+  
 <button
 class="btn"
 onclick="downloadResultImage()">
@@ -732,7 +760,10 @@ function submitLead() {
 
   function downloadResultImage() {
     const resultArea = document.getElementById("thanks");
-
+    resultArea.style.padding = "42px";
+    resultArea.style.maxWidth = "720px";
+    resultArea.style.margin = "0 auto";
+    
     html2canvas(resultArea, {
         backgroundColor: "#ffffff",
         scale: 2
