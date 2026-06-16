@@ -159,8 +159,8 @@ select:focus {
 .question-image {
  display: block;
   width: 100%;
-  max-width: 420px;
-  max-height: 260px;
+  max-width: min(100%, 480px);
+  max-height: 280px;
   object-fit: contain;
   border-radius: 12px;
   margin: 15px auto;
@@ -347,7 +347,7 @@ alt="">
 <div id="lead" class="hidden">
 
 <h2>
-Unlock Your Full Score
+🎁Unlock Your Full Score🎁
 </h2>
 
 <p>
@@ -614,44 +614,44 @@ function getResultLevel(score, total) {
 
     if (percent >= 90) {
         return {
-            title: "🏆 GNSS Expert",
+            title: "RANK I: 🏆 GNSS Expert",
             comment: "Excellent work! You demonstrate a strong understanding of GNSS, RTK, and modern surveying technologies."
         };
     }
 
     if (percent >= 70) {
         return {
-            title: "🎯 RTK Professional",
+            title: "RANK II: 🎯 RTK Professional",
             comment: "Great job! You have solid knowledge of positioning technologies and field surveying applications."
         };
     }
 
     if (percent >= 50) {
         return {
-            title: "📍 Surveying Enthusiast",
+            title: "RANK III: 📍 Surveying Enthusiast",
             comment: "Well done! You understand many key GNSS and RTK concepts and are building a strong foundation."
         };
     }
 
     if (percent >= 30) {
         return {
-            title: "🚀 GNSS Explorer",
+            title: "RANK IV: 🚀 GNSS Explorer",
             comment: "You're off to a good start. Keep learning and exploring the world of positioning technology."
         };
     }
 
     return {
-        title: "🌍 Future Positioning Expert",
+        title: "RANK V: 🌍 Future Positioning Expert",
         comment: "Everyone starts somewhere. Thanks for taking the challenge and beginning your GNSS journey."
     };
 }
 
 function getScoreOutOfTen() {
     if (!questions.length) {
-        return 0;
+        return "0.0";
     }
 
-    return Math.round((score / questions.length) * 10);
+    return ((score / questions.length) * 10).toFixed(1);
 }
   
 function submitLead() {
@@ -699,7 +699,7 @@ function submitLead() {
               const tenPointScore = getScoreOutOfTen();
 
               document.getElementById("finalScore").innerText =
-                `Your Score: ${tenPointScore} / 10`;
+                `Your Score: ${tenPointScore}`;
 
               document.getElementById("resultLevel").innerText = result.title;
 
