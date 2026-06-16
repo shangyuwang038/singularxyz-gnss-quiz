@@ -480,7 +480,7 @@ Share My Result
 let questions = [];
 let current = 0;
 let score = 0;
-let selectedAnswer = [];
+let selectedAnswers = [];
 let answerSubmitted = false;
 const API_URL = "https://script.google.com/macros/s/AKfycbww_alx9XhuCFKtnqC6tQdO0gFrP9sdsT8HvM5dF4r6PCleC_IG4E-_ZfaYK8aMfDExFA/exec"; 
 
@@ -506,7 +506,7 @@ function startQuiz() {
 }
 
 function showQuestion() {
-    selectedAnswer = [];
+    selectedAnswers = [];
     answerSubmitted = false;
 
     document.getElementById("submitAnswerBtn").classList.remove("hidden");
