@@ -463,15 +463,14 @@ Share My Result
 
 </button>
   
-  <div class="qr-box">
+  <div id="qrBox" class="qr-box hidden">
   <p>Scan to take the challenge</p>
 
   <img
-  id="resultQr"
   class="result-qr"
   src="images/quiz-qr.png"
   alt="Quiz QR code">
-</div>
+  </div>
 
 </div>
 
@@ -481,7 +480,7 @@ Share My Result
 let questions = [];
 let current = 0;
 let score = 0;
-let selectedAnswer = null;
+let selectedAnswer = [];
 let answerSubmitted = false;
 const API_URL = "https://script.google.com/macros/s/AKfycbww_alx9XhuCFKtnqC6tQdO0gFrP9sdsT8HvM5dF4r6PCleC_IG4E-_ZfaYK8aMfDExFA/exec"; 
 
@@ -507,7 +506,7 @@ function startQuiz() {
 }
 
 function showQuestion() {
-    selectedAnswer = null;
+    selectedAnswer = [];
     answerSubmitted = false;
 
     document.getElementById("submitAnswerBtn").classList.remove("hidden");
@@ -539,7 +538,9 @@ function showQuestion() {
     });
 
     document.getElementById("progressText").innerText =
-        `Question ${current + 1} of ${questions.length}`;
+    type === "multiple"
+        ? `Question ${current + 1} of ${questions.length} · Select all that apply`
+        : `Question ${current + 1} of ${questions.length}`;
 
     document.getElementById("bar").style.width =
         `${((current + 1) / questions.length) * 100}%`;
@@ -549,12 +550,44 @@ function selectOption(idx, btn) {
     if (answerSubmitted) {
         return;
     }
-    selectedAnswer = idx;
 
-    const opts = document.querySelectorAll(".option");
-    opts.forEach(o => o.classList.remove("selected"));
+    const q = questions[current];
+    const type = String(q.type || "single").trim().toLowerCase();
 
-    btn.classList.add("selected");
+    if (type === "multiple") {
+        if (selectedAnswers.includes(idx)) {
+            selectedAnswers = selectedAnswers.filter(i => i !== idx);
+            btn.classList.remove("selected");
+        } else {
+            selectedAnswers.push(idx);
+            btn.classList.add("selected");
+        }
+    } else {
+        selectedAnswers = [idx];
+
+        const opts = document.querySelectorAll(".option");
+        opts.forEach(o => o.classList.remove("selected"));
+
+        btn.classList.add("selected");
+    }
+}
+
+function getCorrectIndexes(q) {
+    return String(q.correct || "")
+        .split(",")
+        .map(v => Number(v.trim()) - 1)
+        .filter(v => !Number.isNaN(v));
+}
+
+function arraysEqual(a, b) {
+    if (a.length !== b.length) {
+        return false;
+    }
+
+    const sortedA = [...a].sort((x, y) => x - y);
+    const sortedB = [...b].sort((x, y) => x - y);
+
+    return sortedA.every((value, index) => value === sortedB[index]);
 }
 
 function nextQuestion() {
@@ -592,9 +625,9 @@ function nextQuestion() {
 }
   
   function submitAnswer() {
-    if (selectedAnswer === null) {
-        alert("Please select an answer.");
-        return;
+    if (selectedAnswers.length === 0) {
+    alert("Please select at least one answer.");
+    return;
     }
 
     if (answerSubmitted) {
@@ -604,8 +637,8 @@ function nextQuestion() {
     answerSubmitted = true;
 
     const q = questions[current];
-    const correctIndex = Number(q.correct) - 1;
-    const isCorrect = selectedAnswer === correctIndex;
+    const correctIndexes = getCorrectIndexes(q);
+    const isCorrect = arraysEqual(selectedAnswers, correctIndexes);
 
     if (isCorrect) {
         score++;
@@ -614,14 +647,14 @@ function nextQuestion() {
     const opts = document.querySelectorAll(".option");
 
     opts.forEach((opt, idx) => {
-        if (idx === correctIndex) {
-            opt.classList.add("correct");
-        }
+        if (correctIndexes.includes(idx)) {
+        opt.classList.add("correct");
+     }
 
-        if (idx === selectedAnswer && !isCorrect) {
-            opt.classList.add("wrong");
-        }
-    });
+    if (selectedAnswers.includes(idx) && !correctIndexes.includes(idx)) {
+        opt.classList.add("wrong");
+     }
+ });
 
     document.getElementById("feedbackTitle").innerText =
         isCorrect ? "Correct Answer!" : "Wrong Answer, but Good Try!";
@@ -770,7 +803,6 @@ function submitLead() {
 
     qrBox.classList.remove("hidden");
 
-    
     resultArea.style.padding = "42px";
     resultArea.style.maxWidth = "720px";
     resultArea.style.margin = "0 auto";
