@@ -845,7 +845,7 @@ function submitLead() {
   function loadCountries() {
     const countrySelect = document.getElementById("country");
 
-    fetch("data/countries.txt")
+    fetch("countries.txt")
         .then(response => response.text())
         .then(text => {
             text
