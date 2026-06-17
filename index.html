@@ -633,6 +633,12 @@ function nextQuestion() {
         /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
         '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
     );
+    
+     safeText = safeText
+        .replace(/&lt;br\s*\/?&gt;/gi, "<br>")
+        .replace(/\\n/g, "<br>")
+        .replace(/\r?\n/g, "<br>");
+    
     return safeText.replace(/\n/g, "<br>");
 }
   
@@ -677,7 +683,7 @@ function nextQuestion() {
     feedbackText.innerHTML = formatFeedbackText(q.productText);
     feedbackText.classList.remove("hidden");
     } else {
-    feedbackText.innerText = "";
+    feedbackText.innerHTML = "";
     feedbackText.classList.add("hidden");
     }
 
