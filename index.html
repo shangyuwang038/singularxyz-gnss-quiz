@@ -281,12 +281,11 @@ Loading Questions...
 <div id="welcome" class="hidden">
 
 <h1>
-🏆 GNSS Knowledge Challenge
+🏆 Ready for the GNSS Challenge?
 </h1>
 
 <p>
-Test your GNSS, RTK and
-Geospatial Technology knowledge.
+Test your GNSS knowledge and unlock your chance to win.
 </p>
 
 <p>
@@ -378,9 +377,9 @@ Fill in your details to view your complete result and get a chance to win exclus
 id="name"
 placeholder="name *">
 
-<input
-id="country"
-placeholder="Country / Region *">
+<select id="country">
+  <option value="">Country / Region *</option>
+</select>
 
 <input
 id="email"
@@ -496,6 +495,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbww_alx9XhuCFKtnqC6tQdO
 
 // 页面加载时获取题目
 window.onload = function() {
+    loadCountries();
     fetch(API_URL)
     .then(res => res.json())
     .then(data => {
@@ -840,6 +840,36 @@ function submitLead() {
         resultArea.style.maxWidth = oldMaxWidth;
         resultArea.style.margin = oldMargin;
     });
+}
+
+  function loadCountries() {
+    const countrySelect = document.getElementById("country");
+
+    fetch("data/countries.txt")
+        .then(response => response.text())
+        .then(text => {
+            text
+                .split(/\r?\n/)
+                .map(country => country.trim())
+                .filter(country => country)
+                .forEach(country => {
+                    const option = document.createElement("option");
+                    option.value = country;
+                    option.textContent = country;
+                    countrySelect.appendChild(option);
+                });
+        })
+        .catch(error => {
+            console.error("Failed to load countries:", error);
+
+            ["United States", "Canada", "United Kingdom", "Germany", "China", "Other"]
+                .forEach(country => {
+                    const option = document.createElement("option");
+                    option.value = country;
+                    option.textContent = country;
+                    countrySelect.appendChild(option);
+                });
+        });
 }
 </script>
 
