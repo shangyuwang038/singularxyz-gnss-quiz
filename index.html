@@ -623,23 +623,23 @@ function nextQuestion() {
     }
 }
 
-  function formatFeedbackText(text) {
-    const safeText = String(text || "")
+ function formatFeedbackText(text) {
+    let safeText = String(text || "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
 
-    return safeText.replace(
-        /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
+    safeText = safeText.replace(
+        /\[([^\]]+)\]\s*\((https?:\/\/[^)\s]+)\)/g,
         '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
     );
-    
-     safeText = safeText
+
+    safeText = safeText
         .replace(/&lt;br\s*\/?&gt;/gi, "<br>")
         .replace(/\\n/g, "<br>")
         .replace(/\r?\n/g, "<br>");
-    
-    return safeText.replace(/\n/g, "<br>");
+
+    return safeText;
 }
   
   function submitAnswer() {
